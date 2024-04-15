@@ -1,0 +1,19 @@
+﻿@model DoAnCoSo.Models.Story
+
+@{
+    ViewBag.Title = "DeleteProduct";
+    Layout = "~/Areas/Admin/Views/Shared/AdminLayout.cshtml";
+}
+
+@using (Html.BeginForm("DeleteProduct", "Manager", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="info_back">
+        <div class="info_submit" style="text-align:center">
+            <input type="hidden" name="story_id" value="@Model.story_id" />
+            <input type="submit" value="Xóa" class="btn btn-default" /> |
+            @Html.ActionLink("Trở về", "ManagerProduct", "Manager")
+        </div>
+    </div>
+}

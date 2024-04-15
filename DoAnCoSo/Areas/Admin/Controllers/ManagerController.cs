@@ -551,10 +551,187 @@ namespace DoAnCoSo.Areas.Admin.Controllers
         }
 
 
+        public ActionResult ChiTiet(string sortOrder, string currentFilter, string searchString, int? page, int id)
+        {
+            Session["temp"] = id;
+            ViewBag.CurrentSort = sortOrder;
+            ViewBag.AdminPriceDes = "price_Des";
+            ViewBag.AdminPriceAsc = "price_Asc";
+
+            string admin = (string)Session["Role"];
+            if (Session["idUser"] != null && admin.CompareTo("Admin") == 0)
+            {
+                if (searchString != null)
+                {
+                    page = 1;
+                }
+                else
+                {
+                    searchString = currentFilter;
+                }
+
+                ViewBag.CurrentFilter = searchString;
+
+                var check = from s in dbContext.Chapters
+                            select s;
+                var product = dbContext.Chapters.Where(p => p.story_id == id);
+
+                if (!String.IsNullOrEmpty(searchString))
+                {
+                    product = product.Where(s => s.title.Contains(searchString));
+                }
+
+                switch (sortOrder)
+                {
+                    case "price_Des":
+                        product = product.OrderByDescending(s => s.title);
+                        break;
+                    case "price_Asc":
+                        product = product.OrderBy(s => s.title);
+                        break;
+                    default:
+                        product = product.OrderBy(s => s.title);
+                        break;
+                }
+
+
+                int pageSize = 6;
+                int pageIndex = page.HasValue ? page.Value : 1;
+
+                return View(product.ToList().ToPagedList(pageIndex, pageSize));
+            }
+            else
+            {
+                return RedirectToAction("DangNhap", "Account", new { area = "" });
+            }
+
+
+        }
+        [HttpGet]
+        public ActionResult Createchap()
+        {
+            string admin = (string)Session["Role"];
+            if (Session["idUser"] != null && admin.CompareTo("Admin") == 0)
+            {
+                Session["story_id"] = Session["temp"];
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("DangNhap", "Account", new { area = "" });
+            }
+        }
 
 
 
+        [HttpPost]
+        public ActionResult CreateChap(Chapter newProduct)
+        {
+
+            if (ModelState.IsValid)
+            {
+                //if (newProduct.thumbnail != null && newProduct.ImageFile.ContentLength > 0)
+                //{
+                //    var fileName = Path.GetFileName(newProduct.ImageFile.FileName);
+                //    var filePath = Path.Combine(Server.MapPath("~/Content/images"), fileName);
+                //    newProduct.ImageFile.SaveAs(filePath);
+                //    newProduct.thumbnail = "/Content/Images/" + fileName;
+                //}
+                dbContext.Chapters.Add(newProduct);
+                dbContext.SaveChanges();
+                var check = Session["story_id"];
+
+                return RedirectToAction("ManagerProduct", "Manager");
+            }
+            else
+                return RedirectToAction("CreateChap", "Manager");
+        }
+
+
+        [HttpGet]
+        public ActionResult EditChap(int id)
+        {
+
+            //string admin = (string)Session["Role"];
+            //if (Session["idUser"] != null && admin.CompareTo("Admin") == 0)
+            //{
+            var _product = dbContext.Chapters.FirstOrDefault(p => p.story_id == id);
+
+            if (_product != null)
+            {
+                return View(_product);
+            }
+            else
+            {
+                return HttpNotFound("khong tim thay hoac loi");
+            }
+            //}
+            //else
+            //{
+            //    return RedirectToAction("DangNhap", "Account", new { area = "" });
+            //}
+        }
+
+        [HttpPost]
+        public ActionResult EditChap(Chapter editProduct)
+        {
+
+            var _product = dbContext.Chapters.FirstOrDefault(p => p.chapter_id == editProduct.chapter_id);
+            if (_product != null)
+            {
+                //var f_password = GetMD5(editUser.password);
+
+                _product.title = editProduct.title;
+                _product.chap = editProduct.chap;
+                _product.content = editProduct.content;
+                dbContext.SaveChanges();
+                return RedirectToAction("ChiTiet", "Manager");
+            }
+            else
+            {
+                return HttpNotFound("tim khong thay");
+            }
+        }
+
+        [HttpGet]
+        public ActionResult DeleteChap(int id)
+        {
+            var _product = dbContext.Chapters.FirstOrDefault(p => p.chapter_id == id);
+            return View(_product);
+        }
+
+        [HttpPost]
+        public ActionResult DeleteChap(Chapter delProduct)
+        {
+            var _product = dbContext.Chapters.FirstOrDefault(p => p.chapter_id == delProduct.chapter_id);
+            if (_product != null)
+            {
+                if (_product != null)
+                {
+                    TempData["Message"] = "Không thể xóa chương này";
+                    return RedirectToAction("ManagerProduct", "Manager");
+                }
+                else
+                {
+
+
+                    dbContext.Chapters.Remove(_product);
+                    dbContext.SaveChanges();
+                    return RedirectToAction("ManagerProduct", "Manager");
+                }
+
+
+            }
+            else
+            {
+                return HttpNotFound("khong tim thay hoac loi");
+            }
+        }
     }
+
+
+
+}
 }
 
 
