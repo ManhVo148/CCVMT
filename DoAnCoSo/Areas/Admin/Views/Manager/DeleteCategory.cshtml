@@ -1,0 +1,21 @@
+@model DoAnCoSo.Models.Genre
+
+@{
+    ViewBag.Title = "DeleteCategory";
+    Layout = "~/Areas/Admin/Views/Shared/AdminLayout.cshtml";
+}
+
+
+
+@using (Html.BeginForm("DeleteCategory", "Manager", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="info_back">
+        <div class="info_submit" style="text-align:center">
+            <input type="hidden" name="genre_id" value="@Model.genre_id" />
+            <input type="submit" value="Xóa" class="btn btn-default" /> |
+            @Html.ActionLink("Trở về", "ManagerCategory", "Manager")
+        </div>
+    </div>
+}

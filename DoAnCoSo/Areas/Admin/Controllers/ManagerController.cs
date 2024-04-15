@@ -222,176 +222,339 @@ namespace DoAnCoSo.Areas.Admin.Controllers
 
 
 
-////////////////////////////////////////////////////////////USER
-public ActionResult ManagerUser(string sortUser, string currentFilter, string searchString, int? page)
-{
-    ViewBag.CurrentSort = sortUser;
-    ViewBag.AdminUserDes = "user_Des";
-    ViewBag.AdminUserAsc = "user_Asc";
-
-
-    string admin = (string)Session["Role"];
-    if (Session["idUser"] != null && admin.CompareTo("Admin") == 0)
-    {
-        if (searchString != null)
+        ////////////////////////////////////////////////////////////USER
+        public ActionResult ManagerUser(string sortUser, string currentFilter, string searchString, int? page)
         {
-            page = 1;
+            ViewBag.CurrentSort = sortUser;
+            ViewBag.AdminUserDes = "user_Des";
+            ViewBag.AdminUserAsc = "user_Asc";
+
+
+            string admin = (string)Session["Role"];
+            if (Session["idUser"] != null && admin.CompareTo("Admin") == 0)
+            {
+                if (searchString != null)
+                {
+                    page = 1;
+                }
+                else
+                {
+                    searchString = currentFilter;
+                }
+
+                ViewBag.CurrentFilter = searchString;
+
+                var user = from s in dbContext.Users
+                           select s;
+                if (!String.IsNullOrEmpty(searchString))
+                {
+                    user = user.Where(s => s.username.Contains(searchString));
+                }
+
+
+                switch (sortUser)
+                {
+                    case "user_Des":
+                        user = user.OrderByDescending(s => s.username);
+                        break;
+                    case "user_Asc":
+                        user = user.OrderBy(s => s.username);
+                        break;
+                    default:  // Name ascending                    
+                        break;
+                }
+
+
+                int pageSize = 6;
+                int pageIndex = page.HasValue ? page.Value : 1;
+
+
+
+                //  var listProduct = dbContext.Product.Where(p =>p.title == name)
+                //var listProduct = dbContext.Product.ToList();
+                return View(user.ToList().ToPagedList(pageIndex, pageSize));
+            }
+            else
+            {
+                return RedirectToAction("DangNhap", "Account", new { area = "" });
+            }
         }
-        else
+
+        [HttpGet]
+        public ActionResult CreateUser()
         {
-            searchString = currentFilter;
+            string admin = (string)Session["Role"];
+            if (Session["idUser"] != null && admin.CompareTo("Admin") == 0)
+            {
+                ViewBag.ListRoleUser = dbContext.Roles.ToList();
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("Login", "Account", new { area = "" });
+            }
+
+
+
         }
 
-        ViewBag.CurrentFilter = searchString;
-
-        var user = from s in dbContext.Users
-                   select s;
-        if (!String.IsNullOrEmpty(searchString))
+        [HttpPost]
+        public ActionResult CreateUser(User newUser)
         {
-            user = user.Where(s => s.username.Contains(searchString));
+            newUser.password = GetMD5(newUser.password);
+
+            if (ModelState.IsValid)
+            {
+                var check = dbContext.Users.FirstOrDefault(s => s.email == newUser.email);
+                if (check == null)
+                {
+                    dbContext.Users.Add(newUser);
+                    dbContext.SaveChanges(); ;
+                    return RedirectToAction("ManagerUser");
+                }
+                else
+                {
+                    ViewBag.error = "Email đã tồn tại";
+                    ViewBag.ListRoleUser = dbContext.Roles.ToList();
+                    return View();
+                }
+            }
+            else
+                return RedirectToAction("CreateUser");
         }
 
-
-        switch (sortUser)
+        public ActionResult EditUser(int id)
         {
-            case "user_Des":
-                user = user.OrderByDescending(s => s.username);
-                break;
-            case "user_Asc":
-                user = user.OrderBy(s => s.username);
-                break;
-            default:  // Name ascending                    
-                break;
-        }
-
-
-        int pageSize = 6;
-        int pageIndex = page.HasValue ? page.Value : 1;
-
-
-
-        //  var listProduct = dbContext.Product.Where(p =>p.title == name)
-        //var listProduct = dbContext.Product.ToList();
-        return View(user.ToList().ToPagedList(pageIndex, pageSize));
-    }
-    else
-    {
-        return RedirectToAction("DangNhap", "Account", new { area = "" });
-    }
-}
-
-[HttpGet]
-public ActionResult CreateUser()
-{
-    string admin = (string)Session["Role"];
-    if (Session["idUser"] != null && admin.CompareTo("Admin") == 0)
-    {
-        ViewBag.ListRoleUser = dbContext.Roles.ToList();
-        return View();
-    }
-    else
-    {
-        return RedirectToAction("Login", "Account", new { area = "" });
-    }
-
-
-
-}
-
-[HttpPost]
-public ActionResult CreateUser(User newUser)
-{
-    newUser.password = GetMD5(newUser.password);
-
-    if (ModelState.IsValid)
-    {
-        var check = dbContext.Users.FirstOrDefault(s => s.email == newUser.email);
-        if (check == null)
-        {
-            dbContext.Users.Add(newUser);
-            dbContext.SaveChanges(); ;
-            return RedirectToAction("ManagerUser");
-        }
-        else
-        {
-            ViewBag.error = "Email đã tồn tại";
+            var _user = dbContext.Users.FirstOrDefault(p => p.user_id == id);
             ViewBag.ListRoleUser = dbContext.Roles.ToList();
-            return View();
+            return View(_user);
         }
-    }
-    else
-        return RedirectToAction("CreateUser");
-}
-
-public ActionResult EditUser(int id)
-{
-    var _user = dbContext.Users.FirstOrDefault(p => p.user_id == id);
-    ViewBag.ListRoleUser = dbContext.Roles.ToList();
-    return View(_user);
-}
-[HttpPost]
-public ActionResult EditUser(User editUser)
-{
-
-    var _user = dbContext.Users.FirstOrDefault(p => p.user_id == editUser.user_id);
-    if (_user != null)
-    {
-        var f_password = GetMD5(editUser.password);
-        _user.username = editUser.username;
-        _user.role_id = editUser.role_id;
-        _user.password = f_password;
-        _user.email = editUser.email;
-        dbContext.SaveChanges();
-        return RedirectToAction("ManagerUser", "Manager");
-    }
-    else
-    {
-        return HttpNotFound("khong tim thay hoac loi");
-    }
-}
-
-public ActionResult DeleteUser(int id)
-{
-    var _User = dbContext.Users.FirstOrDefault(p => p.user_id == id);
-    return View(_User);
-}
-
-[HttpPost]
-public ActionResult DeleteUser(User delUser)
-{
-
-
-    var _User = dbContext.Users.FirstOrDefault(p => p.user_id == delUser.user_id);
-    if (_User != null)
-    {
-        var _UserFind = dbContext.Bookmarks.FirstOrDefault(p => p.user_id == _User.user_id);
-        var _UserFind1 = dbContext.Ratings.FirstOrDefault(p => p.user_id == _User.user_id);
-        if (_UserFind != null || _UserFind1 != null)
+        [HttpPost]
+        public ActionResult EditUser(User editUser)
         {
-            TempData["Message"] = "Ban khong the xoa nguoi dung nay";
-            return View();
 
+            var _user = dbContext.Users.FirstOrDefault(p => p.user_id == editUser.user_id);
+            if (_user != null)
+            {
+                var f_password = GetMD5(editUser.password);
+                _user.username = editUser.username;
+                _user.role_id = editUser.role_id;
+                _user.password = f_password;
+                _user.email = editUser.email;
+                dbContext.SaveChanges();
+                return RedirectToAction("ManagerUser", "Manager");
+            }
+            else
+            {
+                return HttpNotFound("khong tim thay hoac loi");
+            }
         }
-        else
+
+        public ActionResult DeleteUser(int id)
         {
-            dbContext.Users.Remove(_User);
-            dbContext.SaveChanges();
-            return RedirectToAction("ManagerUser", "Manager");
+            var _User = dbContext.Users.FirstOrDefault(p => p.user_id == id);
+            return View(_User);
         }
+
+        [HttpPost]
+        public ActionResult DeleteUser(User delUser)
+        {
+
+
+            var _User = dbContext.Users.FirstOrDefault(p => p.user_id == delUser.user_id);
+            if (_User != null)
+            {
+                var _UserFind = dbContext.Bookmarks.FirstOrDefault(p => p.user_id == _User.user_id);
+                var _UserFind1 = dbContext.Ratings.FirstOrDefault(p => p.user_id == _User.user_id);
+                if (_UserFind != null || _UserFind1 != null)
+                {
+                    TempData["Message"] = "Ban khong the xoa nguoi dung nay";
+                    return View();
+
+                }
+                else
+                {
+                    dbContext.Users.Remove(_User);
+                    dbContext.SaveChanges();
+                    return RedirectToAction("ManagerUser", "Manager");
+                }
+            }
+            else
+            {
+                ViewBag.ErroDellUser1 = "Khong co nguoi dung hoac nguoi dung da bi xoa";
+                return View();
+            }
+
+        }
+        public ActionResult ManagerCategory(string currentFilter, string searchString, int? page, string sortname)
+        {
+            ViewBag.CurrentSort = sortname;
+            ViewBag.AdminnameDes = "name_Des";
+            ViewBag.AdminnameAsc = "name_Asc";
+            string admin = (string)Session["Role"];
+            if (Session["idUser"] != null && admin.CompareTo("Admin") == 0)
+            {
+                if (searchString != null)
+                {
+                    page = 1;
+                }
+                else
+                {
+                    searchString = currentFilter;
+                }
+
+                ViewBag.CurrentFilter = searchString;
+
+                var category = from s in dbContext.Genres
+                               select s;
+                if (!String.IsNullOrEmpty(searchString))
+                {
+                    category = category.Where(s => s.genre_name.Contains(searchString));
+                }
+
+
+                switch (sortname)
+                {
+                    case "name_Des":
+                        category = category.OrderByDescending(s => s.genre_name);
+                        break;
+                    case "name_Asc":
+                        category = category.OrderBy(s => s.genre_name);
+                        break;
+                    default:  // Name ascending                    
+                        break;
+                }
+                int pageSize = 6;
+                int pageIndex = page.HasValue ? page.Value : 1;
+
+                return View(category.ToList().ToPagedList(pageIndex, pageSize));
+            }
+            else
+            {
+                return RedirectToAction("DangNhap", "Account", new { area = "" });
+            }
+        }
+
+        [HttpGet]
+        public ActionResult CreateCategory()
+        {
+            string admin = (string)Session["Role"];
+            if (Session["idUser"] != null && admin.CompareTo("Admin") == 0)
+            {
+                ViewBag.ListCate = dbContext.Genres.ToList();
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("DangNhap", "Account", new { area = "" });
+            }
+        }
+
+        [HttpPost]
+        public ActionResult CreateCategory(Genre newCategory)
+        {
+
+            if (ModelState.IsValid)
+            {
+                dbContext.Genres.Add(newCategory);
+                dbContext.SaveChanges();
+                return RedirectToAction("ManagerCategory");
+            }
+            else
+                return RedirectToAction("CreateCategory");
+        }
+        [HttpGet]
+        public ActionResult EditCategory(int id)
+        {
+
+            //string admin = (string)Session["Role"];
+            //if (Session["idUser"] != null && admin.CompareTo("Admin") == 0)
+            //{
+            var category = dbContext.Genres.FirstOrDefault(p => p.genre_id == id);
+            ViewBag.ListCate = dbContext.Genres.ToList();
+            if (category != null)
+            {
+                return View(category);
+            }
+            else
+            {
+                return HttpNotFound("khong tim thay hoac loi");
+            }
+            //}
+            //else
+            //{
+            //    return RedirectToAction("DangNhap", "Account", new { area = "" });
+            //}
+
+
+        }
+
+        [HttpPost]
+        public ActionResult EditCategory(Genre editCategory)
+        {
+
+            var category = dbContext.Genres.FirstOrDefault(p => p.genre_id == editCategory.genre_id);
+            if (category != null)
+            {
+                //var f_password = GetMD5(editUser.password);
+
+                category.genre_name = editCategory.genre_name;
+                dbContext.SaveChanges();
+                return RedirectToAction("ManagerCategory", "Manager");
+            }
+            else
+            {
+                return HttpNotFound("tim khong thay");
+            }
+
+
+
+        }
+
+        [HttpGet]
+        public ActionResult DeleteCategory(int id)
+        {
+            var category = dbContext.Genres.FirstOrDefault(p => p.genre_id == id);
+            return View(category);
+        }
+
+        [HttpPost]
+        public ActionResult DeleteCategory(Genre delcategory)
+        {
+            var category = dbContext.Genres.FirstOrDefault(p => p.genre_id == delcategory.genre_id);
+            if (category != null)
+            {
+                var _CateFind = dbContext.Stories.FirstOrDefault(p => p.genre_id == category.genre_id);
+                if (_CateFind != null)
+                {
+                    TempData["Message"] = "Ban khong the xoa loai san pham nay";
+                    return RedirectToAction("ManagerCategory", "Manager");
+
+                }
+                else
+                {
+                    dbContext.Genres.Remove(category);
+                    dbContext.SaveChanges();
+                    return RedirectToAction("ManagerCategory", "Manager");
+                }
+            }
+            else
+            {
+                ViewBag.ErroDellCate1 = "Khong co loai san pham nay hoac da bi xoa";
+                return View();
+            }
+
+
+
+
+
+        }
+
+
+
+
+
     }
-    else
-    {
-        ViewBag.ErroDellUser1 = "Khong co nguoi dung hoac nguoi dung da bi xoa";
-        return View();
-    }
-
-}
-
-
-
-
-
-
 }
 
 
