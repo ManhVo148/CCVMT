@@ -1,0 +1,454 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com/">
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+
+
+    <!-- Bootstrap CSS v5.2.1 -->
+
+    <link href="~/Content/assets/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="~/Content/assets/app.css">
+
+
+</head>
+
+<style>
+    .category1 {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 10px; /* Khoảng cách giữa các ô */
+        padding: 0; /* Xóa padding mặc định của danh sách */
+        margin-left: 5px;
+        margin-top: -3px;
+        margin-right: 5px;
+        
+    }
+
+        .category1 li {
+            list-style: none; /* Loại bỏ dấu đầu dòng của danh sách */
+            margin: 0; /* Xóa margin mặc định của danh sách */
+            font-family:fangsong;
+            text-align:center;
+        }
+
+        .category1 a {
+            display: block; /* Biến các liên kết thành phần block để có thể căn chỉnh và định dạng */
+            padding: 10px; /* Khoảng cách bên trong của mỗi ô */
+            text-decoration: none; /* Loại bỏ gạch chân mặc định của liên kết */
+            color: #333; /* Màu chữ */
+            background-color: #f4f4f4; /* Màu nền của mỗi ô */
+            border-radius: 5px; /* Bo góc của mỗi ô */
+            transition: background-color 0.3s ease; /* Hiệu ứng khi hover */
+        }
+
+            .category1 a:hover {
+                background-color: #ddd; /* Màu nền khi hover */
+            }
+
+
+    .dropdown-menu {
+        background-color: #ffffff; /* Màu nền của dropdown */
+        border: 1px solid #ced4da; /* Viền của dropdown */
+    }
+
+        .dropdown-menu a {
+            color: black; /* Màu chữ của các lựa chọn trong dropdown */
+            padding: 0.5rem 1rem; /* Khoảng cách giữa nội dung và viền của dropdown */
+            display: block; /* Hiển thị mỗi lựa chọn trên một dòng */
+            font-size: 16px; /* Kích thước chữ */
+            text-decoration: none; /* Loại bỏ gạch chân */
+        }
+
+            .dropdown-menu a:hover {
+                background-color: #f8f9fa; /* Màu nền khi di chuột qua lựa chọn */
+            }
+
+    .dropdown-toggle::after {
+        display: inline-block;
+        margin-left: 0.255em;
+        vertical-align: 0.255em;
+        content: "";
+        border-top: 0.3em solid;
+        border-right: 0.3em solid transparent;
+        border-bottom: 0;
+        border-left: 0.3em solid transparent;
+    }
+
+
+
+    /* CSS cho dropdown-menu */
+    .dropdown-menu1 {
+        position: relative;
+        display: inline-block;
+        margin-right: 20px;
+        color: red;
+    }
+
+    .dropdown-content1 {
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        min-width: 160px;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        z-index: 1;
+    }
+
+        .dropdown-content1 a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+            .dropdown-content1 a:hover {
+                background-color: #f1f1f1;
+            }
+
+    .dropdown-menu1:hover .dropdown-content1 {
+        display: block;
+    }
+
+    /* CSS cho nút đăng nhập */
+    .quote_btn-container1 a {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #fff;
+        color: red;
+        border: 2px solid red;
+        border-radius: 5px;
+        font-size: 16px;
+        text-decoration: none;
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+        .quote_btn-container1 a:hover {
+            background-color: red;
+            color: #fff;
+        }
+
+
+
+    .dropdown-menu-custom {
+        display: none; /* Ẩn danh sách khi chưa hover */
+        position: absolute; /* Đảm bảo danh sách hiển thị ở đúng vị trí */
+        z-index: 1; /* Đảm bảo danh sách hiển thị trên các phần tử khác */
+        background-color: #fff; /* Màu nền của danh sách */
+        padding: 10px; /* Khoảng cách bên trong của danh sách */
+        border-radius: 5px; /* Bo góc của danh sách */
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Đổ bóng cho danh sách */
+    }
+
+        .dropdown-menu-custom li {
+            list-style: none; /* Loại bỏ dấu đầu dòng của danh sách */
+        }
+
+        .dropdown-menu-custom a {
+            text-decoration: none; /* Loại bỏ gạch chân của liên kết */
+            color: #333; /* Màu chữ */
+        }
+
+        .dropdown-menu-custom li:hover {
+            background-color: #f0f0f0; /* Màu nền khi hover */
+        }
+
+            .dropdown-menu-custom li:hover a {
+                color: #000; /* Màu chữ khi hover */
+            }
+
+    .nav-item.dropdown:hover .dropdown-menu-custom {
+        display: block; /* Hiển thị danh sách khi hover vào menu cha */
+    }
+
+
+</style>
+
+<body>
+    <header class="header d-none d-lg-block">
+        <!-- place navbar here -->
+        <nav class="navbar navbar-expand-lg navbar-dark header__navbar p-md-0">
+            <div class="container">
+                <a class="navbar-brand" href="/">
+                    <img src="~/Content/assets/images/truyen.png" alt=".Net Truyen" srcset="" class="img-fluid"
+                         style="width: 150px;height:75px">
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
+                               aria-expanded="false">
+                                Thể loại
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-custom theloai" style="width:700px;background-color:currentColor">
+                                @Html.Action("GetCategory1", "Truyen")
+                            </ul>
+                        </li>
+
+                    </ul>
+                    <div style="margin-right:20px; color:red">
+                        @if (Session["idUser"] != null)
+                        {
+                            string admin = (string)Session["Role"];
+                            if (admin.CompareTo("Admin") == 0)
+                            {
+
+                                <div class="dropdown-menu1">
+                                    <a>Hello @Session["FullName"]</a>
+                                    <div class="dropdown-content1">
+                                        <a href="/Admin/Manager/Index">Quản lý</a>
+                                        @Html.ActionLink("Đổi mật khẩu", "ChangePassword", "Account")
+                                        @Html.ActionLink("Đăng xuất", "LogOff", "Account")
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="dropdown-menu1" style="color:red">
+                                    <a style="color: red">Xin Chào @Session["FullName"]</a>
+
+                                    <div class="dropdown-content1">
+                                        @Html.ActionLink("Đổi mật khẩu", "ChangePassword", "Account")
+                                        @Html.ActionLink("Đăng xuất", "LogOff", "Account")
+                                    </div>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <div class="quote_btn-container">
+                                <a href="/Account/DangNhap" style="color:red; text-decoration:none">
+                                    <i class="fa fa-user" aria-hidden="true"></i>
+
+                                    <span>
+                                        Đăng nhập
+                                    </span>
+                                </a>
+                            </div>
+                        }
+           
+                    </div>
+
+                    <form class="d-flex header__form-search" action="/Truyen/Index" method="GET">
+                        @Html.TextBox("searchString", null, new { @class = "form-control search-story", placeholder = "Tìm kiếm" })
+
+                        <div class="col-12 search-result shadow no-result d-none">
+                            <div class="card text-white bg-light">
+                                <div class="card-body p-0">
+                                    <ul class="list-group list-group-flush d-none">
+                                        <li class="list-group-item">
+                                            <a href="#" class="text-dark hover-title">Tự cẩm</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" value="Tìm kiếm" placeholder="Search" class="search">
+                        </button>
+
+                    </form>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="header-mobile d-sm-block d-lg-none">
+        <nav class="navbar navbar-dark bg-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="index.html">
+                    <img src="~/Content/assets/images/.net.jpg" alt="Logo Suu Truyen" srcset="" class="img-fluid"
+                         style="width: 200px;">
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas"
+                        data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="offcanvas offcanvas-end text-bg-dark w-75" tabindex="-1" id="offcanvasDarkNavbar"
+                     aria-labelledby="offcanvasDarkNavbarLabel">
+                    <div class="offcanvas-header">
+                        <img src="~/Content/assets/images/logo_text.png" alt="Logo Suu Truyen" srcset="" class="img-fluid"
+                             style="width: 200px;">
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"
+                                aria-label="Close"></button>
+                    </div>
+
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <main>
+        @RenderBody()
+    </main>
+
+    <div id="footer" class="footer border-top pt-2">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 col-md-5">
+                    <strong>.Net truyện</strong> - <a title="Đọc truyện online" class="text-dark text-decoration-none"
+                                                      href="#">Đọc truyện</a> online một cách nhanh nhất. Hỗ trợ mọi thiết bị như
+                    di
+                    động và máy tính bảng.
+                </div>
+                <ul class="col-12 col-md-7 list-unstyled d-flex flex-wrap list-tag">
+                    <li class="me-1">
+                        <span class="badge text-bg-light">
+                            <a class="text-dark text-decoration-none"
+                               href="#" title="đam mỹ hài">
+                                đam mỹ
+                                hài
+                            </a>
+                        </span>
+                    </li>
+                    <li>
+                        <span class="badge text-bg-light">
+                            <a class="text-dark text-decoration-none"
+                               href="#" title="truyện xuyên nhanh">
+                                truyện
+                                xuyên
+                                nhanh
+                            </a>
+                        </span>
+                    </li>
+                    <li class="me-1">
+                        <span class="badge text-bg-light">
+                            <a class="text-dark text-decoration-none"
+                               href="#" title="đam mỹ hài">
+                                đam mỹ
+                                hài
+                            </a>
+                        </span>
+                    </li>
+                    <li>
+                        <span class="badge text-bg-light">
+                            <a class="text-dark text-decoration-none"
+                               href="#" title="truyện xuyên nhanh">
+                                truyện
+                                xuyên
+                                nhanh
+                            </a>
+                        </span>
+                    </li>
+                    <li class="me-1">
+                        <span class="badge text-bg-light">
+                            <a class="text-dark text-decoration-none"
+                               href="#" title="đam mỹ hài">
+                                đam mỹ
+                                hài
+                            </a>
+                        </span>
+                    </li>
+                    <li>
+                        <span class="badge text-bg-light">
+                            <a class="text-dark text-decoration-none"
+                               href="#" title="truyện xuyên nhanh">
+                                truyện
+                                xuyên
+                                nhanh
+                            </a>
+                        </span>
+                    </li>
+                    <li class="me-1">
+                        <span class="badge text-bg-light">
+                            <a class="text-dark text-decoration-none"
+                               href="#" title="đam mỹ hài">
+                                đam mỹ
+                                hài
+                            </a>
+                        </span>
+                    </li>
+                    <li>
+                        <span class="badge text-bg-light">
+                            <a class="text-dark text-decoration-none"
+                               href="#" title="truyện xuyên nhanh">
+                                truyện
+                                xuyên
+                                nhanh
+                            </a>
+                        </span>
+                    </li>
+                    <li class="me-1">
+                        <span class="badge text-bg-light">
+                            <a class="text-dark text-decoration-none"
+                               href="#" title="đam mỹ hài">
+                                đam mỹ
+                                hài
+                            </a>
+                        </span>
+                    </li>
+                    <li>
+                        <span class="badge text-bg-light">
+                            <a class="text-dark text-decoration-none"
+                               href="#" title="truyện xuyên nhanh">
+                                truyện
+                                xuyên
+                                nhanh
+                            </a>
+                        </span>
+                    </li>
+                    <li class="me-1">
+                        <span class="badge text-bg-light">
+                            <a class="text-dark text-decoration-none"
+                               href="#" title="đam mỹ hài">
+                                đam mỹ
+                                hài
+                            </a>
+                        </span>
+                    </li>
+                    <li>
+                        <span class="badge text-bg-light">
+                            <a class="text-dark text-decoration-none"
+                               href="#" title="truyện xuyên nhanh">
+                                truyện
+                                xuyên
+                                nhanh
+                            </a>
+                        </span>
+                    </li>
+                </ul>
+
+
+            </div>
+        </div>
+    </div>
+
+    <script src="~/Content/assets/jquery.min.js"></script>
+
+    <script src="~/Content/assets/popper.min.js"></script>
+
+    <script src="~/Content/assets/bootstrap.min.js"></script>
+
+
+
+    <script src="~/Content/assets/app.js"></script>
+    <script src="~/Content/assets/common.js"></script>
+
+
+
+    <div id="loadingPage" class="loading-full">
+        <div class="loading-full_icon">
+            <div class="spinner-grow"><span class="visually-hidden">Loading...</span></div>
+        </div>
+    </div>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+
+
+</body>
+
+</html>
+
