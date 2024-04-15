@@ -1,0 +1,162 @@
+﻿@model DoAnCoSo.ViewModels.RegisterModel
+@{
+    ViewBag.Title = "DangKy";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Bước 2: Bao gồm Bootstrap JavaScript -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+
+
+<script>
+            $(document).ready(function() {
+    // Kiểm tra TempData có chứa thông điệp không
+    var message = '@TempData["Message"]';
+    if (message) {
+        // Hiển thị cảnh báo nếu có
+        alert(message);
+    }
+});
+</script>
+
+
+<style>
+
+    .register {
+        width: 300px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f9f9f9;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+    }
+
+    .register_form p {
+        font-size: 20px;
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .register_errorFullName,
+    .register_errorEmail,
+    .register_errorPassword,
+    .register_errorConfirmPassword {
+        color: red;
+        margin-bottom: 10px;
+    }
+
+    .register_fullname,
+    .register_email,
+    .register_password,
+    .register_confirmPassword {
+        margin-bottom: 15px;
+    }
+
+        .register_fullname input,
+        .register_email input,
+        .register_password input,
+        .register_confirmPassword input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            outline: none;
+        }
+
+    .register_submit {
+        width: 100%;
+        padding: 10px;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+        .register_submit:hover {
+            background-color: #45a049;
+        }
+</style>
+
+
+
+<div class="register">
+
+
+
+    @using (Html.BeginForm("DangKy", "Account", FormMethod.Post))
+    {
+    @Html.AntiForgeryToken()
+
+
+    <div class="register_form">
+        <p>Đăng ký</p>
+
+        <div class="register_errorFullName">
+            @Html.ValidationMessageFor(m => m.fullname)
+        </div>
+        <div class="register_fullname">
+
+            @Html.TextBoxFor(m => m.fullname, new { placeholder = "Tên người dùng" })
+        </div>
+
+
+        <div class="register_errorEmail">
+            @ViewBag.error
+            @Html.ValidationMessageFor(m => m.email)
+        </div>
+        <div class="register_email">
+
+            @Html.TextBoxFor(m => m.email, new { placeholder = "Email" })
+        </div>
+
+
+
+        <div class="register_errorPassword">
+            @Html.ValidationMessageFor(m => m.password)
+        </div>
+        <div class="register_password">
+
+            @Html.PasswordFor(m => m.password, new { placeholder = "Mật khẩu" })
+        </div>
+
+
+
+
+        <div class="register_errorConfirmPassword">
+            @Html.ValidationMessageFor(m => m.confirmPassword)
+        </div>
+        <div class="register_confirmPassword">
+
+            @Html.PasswordFor(m => m.confirmPassword, new { placeholder = "Xác nhận mật khẩu" })
+        </div>
+
+
+
+        <input type="submit" class="register_submit" value="Đăng ký" />
+    </div>
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+    }
+
+
+    }
+
+
+</div>
+
+<script>
+    $(document).ready(function() {
+    // Kiểm tra TempData có chứa thông điệp không
+    var message = '@TempData["Message"]';
+    if (message) {
+        // Hiển thị cảnh báo nếu có
+        alert(message);
+    }
+});
+</script>

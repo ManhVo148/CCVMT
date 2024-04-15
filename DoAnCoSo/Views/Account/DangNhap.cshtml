@@ -1,0 +1,126 @@
+﻿@model DoAnCoSo.ViewModels.RegisterModel
+@{
+    ViewBag.Title = "DangNhap";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Bước 2: Bao gồm Bootstrap JavaScript -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+
+
+<script>
+            $(document).ready(function() {
+    // Kiểm tra TempData có chứa thông điệp không
+    var message = '@TempData["Message"]';
+    if (message) {
+        // Hiển thị cảnh báo nếu có
+        alert(message);
+    }
+});
+</script>
+
+<style>
+    .login {
+        width: 300px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f9f9f9;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+    }
+
+    .login_form p {
+        font-size: 20px;
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .login_errorEmail,
+    .login_errorPassword {
+        color: red;
+        margin-bottom: 10px;
+    }
+
+    .login_email,
+    .login_password {
+        margin-bottom: 15px;
+    }
+
+        .login_email input,
+        .login_password input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            outline: none;
+        }
+
+    .login_submit {
+        width: 100%;
+        padding: 10px;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+        .login_submit:hover {
+            background-color: #45a049;
+        }
+
+    .login_Register {
+        display: block;
+        text-align: center;
+        text-decoration: none;
+        color: #4caf50;
+        margin-top: 15px;
+    }
+</style>
+
+
+<div class="login">
+
+
+
+    @using (Html.BeginForm("DangNhap", "Account", FormMethod.Post))
+    {
+    <div class="login_form">
+
+
+        @Html.AntiForgeryToken()
+        <p>Đăng nhập</p>
+
+        <div class="login_errorEmail">
+            @Html.ValidationMessageFor(m => m.email)
+        </div>
+        <div class="login_errorPassword">
+            @ViewBag.Message
+        </div>
+        <div class="login_email">
+
+            @Html.TextBoxFor(m => m.email, new { placeholder = "Email" })
+        </div>
+        <div class="login_errorPassword">
+            @Html.ValidationMessageFor(m => m.password)
+        </div>
+        <div class="login_password">
+            @Html.PasswordFor(m => m.password, new { placeholder = "Mật khẩu" })
+        </div>
+
+
+        <input type="submit" value="Đăng nhập" class="login_submit" />
+
+
+        <a href="/Account/DangKy" class="login_Register">Chưa có tài khoản? Đăng ký ngay</a>
+    </div>
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+    }
+    }
+</div>
