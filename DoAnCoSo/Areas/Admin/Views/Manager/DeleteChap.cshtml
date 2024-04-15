@@ -1,4 +1,4 @@
-﻿@model DoAnCoSo.Models.Story
+﻿@model DoAnCoSo.Models.Chapter
 
 @{
     ViewBag.Title = "DeleteProduct";
@@ -11,7 +11,7 @@
 
     <div class="info_back">
         <div class="info_submit" style="text-align:center">
-            <input type="hidden" name="story_id" value="@Model.story_id" />
+            <input type="hidden" name="chapter_id" value="@Model.Chapters" />
             <input type="submit" value="Xóa" class="btn btn-default" /> |
             @Html.ActionLink("Trở về", "ManagerProduct", "Manager")
         </div>

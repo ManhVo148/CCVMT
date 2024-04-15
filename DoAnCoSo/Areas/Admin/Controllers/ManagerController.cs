@@ -649,89 +649,89 @@ namespace DoAnCoSo.Areas.Admin.Controllers
 
 
         [HttpGet]
-        public ActionResult EditChap(int id)
+public ActionResult EditChap(int id)
+{
+
+    //string admin = (string)Session["Role"];
+    //if (Session["idUser"] != null && admin.CompareTo("Admin") == 0)
+    //{
+    var _product = dbContext.Chapters.FirstOrDefault(p => p.chapter_id == id);
+    
+    if (_product != null)
+    {
+        return View(_product);
+    }
+    else
+    {
+        return HttpNotFound("khong tim thay hoac loi");
+    }
+    //}
+    //else
+    //{
+    //    return RedirectToAction("DangNhap", "Account", new { area = "" });
+    //}
+}
+
+[HttpPost]
+public ActionResult EditChap(Chapter editProduct)
+{
+
+    var _product = dbContext.Chapters.FirstOrDefault(p => p.chapter_id == editProduct.chapter_id);
+    if (_product != null)
+    {
+        //var f_password = GetMD5(editUser.password);
+        _product.story_id = editProduct.story_id;
+        _product.title = editProduct.title;
+        _product.chap = editProduct.chap;
+        _product.content = editProduct.content;
+        dbContext.SaveChanges();
+        return RedirectToAction("ManagerProduct", "Manager");
+    }
+    else
+    {
+        return HttpNotFound("tim khong thay");
+    }
+}
+
+[HttpGet]
+public ActionResult DeleteChap(int id)
+{
+    var _product = dbContext.Chapters.FirstOrDefault(p => p.chapter_id == id);
+    return View(_product);
+}
+
+[HttpPost]
+public ActionResult DeleteChap(Chapter delProduct)
+{
+    var _product = dbContext.Chapters.FirstOrDefault(p => p.chapter_id == delProduct.chapter_id);
+    if (_product != null)
+    {
+        if (_product != null)
+        {
+            TempData["Message"] = "Không thể xóa chương này";
+            return RedirectToAction("ManagerProduct", "Manager");
+        }
+        else
         {
 
-            //string admin = (string)Session["Role"];
-            //if (Session["idUser"] != null && admin.CompareTo("Admin") == 0)
-            //{
-            var _product = dbContext.Chapters.FirstOrDefault(p => p.story_id == id);
 
-            if (_product != null)
-            {
-                return View(_product);
-            }
-            else
-            {
-                return HttpNotFound("khong tim thay hoac loi");
-            }
-            //}
-            //else
-            //{
-            //    return RedirectToAction("DangNhap", "Account", new { area = "" });
-            //}
+            dbContext.Chapters.Remove(_product);
+            dbContext.SaveChanges();
+            return RedirectToAction("ManagerProduct", "Manager");
         }
 
-        [HttpPost]
-        public ActionResult EditChap(Chapter editProduct)
-        {
 
-            var _product = dbContext.Chapters.FirstOrDefault(p => p.chapter_id == editProduct.chapter_id);
-            if (_product != null)
-            {
-                //var f_password = GetMD5(editUser.password);
-
-                _product.title = editProduct.title;
-                _product.chap = editProduct.chap;
-                _product.content = editProduct.content;
-                dbContext.SaveChanges();
-                return RedirectToAction("ChiTiet", "Manager");
-            }
-            else
-            {
-                return HttpNotFound("tim khong thay");
-            }
-        }
-
-        [HttpGet]
-        public ActionResult DeleteChap(int id)
-        {
-            var _product = dbContext.Chapters.FirstOrDefault(p => p.chapter_id == id);
-            return View(_product);
-        }
-
-        [HttpPost]
-        public ActionResult DeleteChap(Chapter delProduct)
-        {
-            var _product = dbContext.Chapters.FirstOrDefault(p => p.chapter_id == delProduct.chapter_id);
-            if (_product != null)
-            {
-                if (_product != null)
-                {
-                    TempData["Message"] = "Không thể xóa chương này";
-                    return RedirectToAction("ManagerProduct", "Manager");
-                }
-                else
-                {
-
-
-                    dbContext.Chapters.Remove(_product);
-                    dbContext.SaveChanges();
-                    return RedirectToAction("ManagerProduct", "Manager");
-                }
-
-
-            }
-            else
-            {
-                return HttpNotFound("khong tim thay hoac loi");
-            }
-        }
+    }
+    else
+    {
+        return HttpNotFound("khong tim thay hoac loi");
+    }
+}
     }
 
 
 
-}
+
 }
 
 

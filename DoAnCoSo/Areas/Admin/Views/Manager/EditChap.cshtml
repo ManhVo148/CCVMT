@@ -1,4 +1,4 @@
-﻿@model DoAnCoSo.Models.Story
+﻿@model DoAnCoSo.Models.Chapter
 
 @{
     ViewBag.Title = "EditProduct";
@@ -9,23 +9,26 @@
 
 @using (Html.BeginForm())
 {
-@Html.AntiForgeryToken()
-
+    @Html.AntiForgeryToken()
+    
 <div class="form-horizontal">
     <hr />
     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @Html.HiddenFor(model => model.chapter_id)
     @Html.HiddenFor(model => model.story_id)
 
+
+
     <div class="form-group">
-        @Html.LabelFor(model => model.genre_id, "Mã danh mục", htmlAttributes: new { @class = "control-label col-md-2" })
+        @Html.LabelFor(model => model.chap, "Chương", htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-10">
-            @Html.DropDownList("category_id", new SelectList(ViewBag.ListCategory, "genre_id", "genre_name"), htmlAttributes: new { @class = "form-control" })
-            @Html.ValidationMessageFor(model => model.genre_id, "", new { @class = "text-danger" })
+            @Html.EditorFor(model => model.chap, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.chap, "", new { @class = "text-danger" })
         </div>
     </div>
 
     <div class="form-group">
-        @Html.LabelFor(model => model.title,"Tên sản phẩm", htmlAttributes: new { @class = "control-label col-md-2" })
+        @Html.LabelFor(model => model.title, "Tiêu đề", htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-10">
             @Html.EditorFor(model => model.title, new { htmlAttributes = new { @class = "form-control" } })
             @Html.ValidationMessageFor(model => model.title, "", new { @class = "text-danger" })
@@ -33,30 +36,14 @@
     </div>
 
     <div class="form-group">
-        @Html.LabelFor(model => model.author,"Tác giả", htmlAttributes: new { @class = "control-label col-md-2" })
+        @Html.LabelFor(model => model.content, "Nội dung", htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-10">
-            @Html.TextBoxFor(model => model.author, new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(model => model.author, "", new { @class = "text-danger" })
+            @Html.EditorFor(model => model.content, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.content, "", new { @class = "text-danger" })
         </div>
     </div>
 
 
-
-    <div class="form-group">
-        @Html.LabelFor(model => model.cover_image_url,"Hình ảnh", htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            <input type="file" id="cover_image_url." name="cover_image_url" />
-            @Html.ValidationMessageFor(model => model.cover_image_url, "", new { @class = "text-danger" })
-        </div>
-    </div>
-
-    <div class="form-group">
-        @Html.LabelFor(model => model.description,"Mô tả", htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(model => model.description, new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(model => model.description, "", new { @class = "text-danger" })
-        </div>
-    </div>
 
 
     @*<div class="form-group">
@@ -70,7 +57,7 @@
     <div class="info_back">
 
         <div class="back_to_list">
-            @Html.ActionLink("Huỷ", "ManagerUser")
+            @Html.ActionLink("Huỷ", "ManagerProduct")
         </div>
 
         <div class="info_submit">
