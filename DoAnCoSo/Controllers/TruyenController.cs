@@ -21,6 +21,17 @@ namespace DoAnCoSo.Controllers
     public class TruyenController : Controller
     {
         TruyenModel dbContext = new TruyenModel();
+         public ActionResult GetCategory()
+ {
+     var listCategory = dbContext.Genres.ToList();
+     return PartialView(listCategory);
+ }
+
+ public ActionResult GetCategory1()
+ {
+     var listCategory = dbContext.Genres.ToList();
+     return PartialView(listCategory);
+ }
 
 
 
