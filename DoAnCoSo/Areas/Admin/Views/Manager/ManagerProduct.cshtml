@@ -1,0 +1,130 @@
+﻿@*@model IEnumerable<DoAnCoSo.Models.Product>*@
+
+
+@model PagedList.IPagedList<DoAnCoSo.Models.Story>
+@using PagedList.Mvc
+@{
+    ViewBag.Title = "ManagerProduct";
+    Layout = "~/Areas/Admin/Views/Shared/AdminLayout.cshtml";
+}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Bước 2: Bao gồm Bootstrap JavaScript -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+<script>
+ $(document).ready(function() {
+     // Kiểm tra TempData có chứa thông điệp không
+     var message = '@TempData["Message"]';
+     if (message) {
+         // Hiển thị cảnh báo nếu có
+         alert(message);
+     }
+ });</script>
+
+
+
+
+@using (Html.BeginForm("ManagerProduct", "Manager", FormMethod.Get))
+{
+
+
+@*<div class="input-group">
+        <div class="input-group-prepend bg-transparent">
+            <i class="input-group-text border-0 mdi mdi-magnify"></i>
+        </div>
+        <input type="text" class="form-control bg-transparent border-0" placeholder="Tìm kiếm sản phẩm">
+    </div>*@
+<div class="header_managerproduct">
+    <div class="create_product">
+        @Html.ActionLink("Thêm", "CreateProduct")
+    </div>
+    <div class="admin_sort_product">
+        <p>Sắp xếp:</p>
+        <div class="admin_price_sort">
+            <p>Theo tên</p>
+            <div class="admin_sort_droplist">
+                @Html.ActionLink("Sắp từ A-Z", "ManagerProduct", new { sortOrder = ViewBag.AdminPriceAsc, currentFilter = ViewBag.CurrentFilter })
+                @Html.ActionLink("Sắp từ Z-A", "ManagerProduct", new { sortOrder = ViewBag.AdminPriceDes, currentFilter = ViewBag.CurrentFilter })
+            </div>
+        </div>
+    </div>
+    <div class="search_po">
+        @Html.TextBox("searchString", null, new { placeholder = "Tìm kiếm theo sản phẩm" })
+
+
+        <input type="submit" value="Tìm kiếm" placeholder="Search" class="search" style="" />
+
+    </div>
+</div>
+
+
+}
+
+
+<table class="table">
+    <tr>
+        <th>
+            <p>Chi tiết</p>
+        </th>
+        <th>
+            <p>Tên sản phẩm</p>
+        </th>
+        <th>
+            <p>Tên tác giả</p>
+        </th>
+        <th>
+            <p>Thể loại</p>
+        </th>
+        <th>
+            <p>Hình ảnh</p>
+        </th>
+        <th>
+            <p>Mô tả</p>
+        </th>
+
+    </tr>
+
+    @foreach (var item in Model)
+    {
+    <tr>
+        <td>
+            <a href="/Admin/Manager/ChiTiet/@item.story_id" style="font-size:40px">
+                <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+            </a>
+
+        </td>
+        <td style="margin-top:55px; width: 200px; overflow: hidden; text-overflow: ellipsis; line-height: 20px; -webkit-line-clamp: 3; height: 60px; display: -webkit-box; -webkit-box-orient: vertical;">
+            @Html.DisplayFor(modelItem => item.title)
+        </td>
+
+        <td>
+            @Html.DisplayFor(modelItem => item.author)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Genre.genre_name)
+        </td>
+        <td>
+            <img src="~/Content/images/@item.cover_image_url" style="width:70px; height:130px; border-radius:0;" />
+        </td>
+        <td style="width: 200px; overflow: hidden; text-overflow: ellipsis; line-height: 20px; -webkit-line-clamp: 3; height: 60px; display: -webkit-box; -webkit-box-orient: vertical;">
+            @Html.DisplayFor(modelItem => item.description)
+        </td>
+
+        <td>
+            <div class="edit_product">
+                <a href="/Admin/Manager/EditProduct/@item.story_id"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+            </div>
+            <div class="del_product">
+                <a href="/Admin/Manager/DeleteProduct/@item.story_id"><i class="fa fa-remove" aria-hidden="true"></i></a>
+            </div>
+
+
+            @*@Html.ActionLink("Sửa", "EditProduct", new { id = item.id }) |
+                @Html.ActionLink("Chi tiết", "Detail", new { id = item.id }) |
+                @Html.ActionLink("Xoá", "DeleteProduct", new { id = item.id })*@
+        </td>
+    </tr>
+    }
+
+</table>
+@Html.PagedListPager(Model, page => Url.Action("ManagerProduct", new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))
