@@ -1,0 +1,209 @@
+@model DoAnCoSo.Models.Chapter
+@{
+    ViewBag.Title = "ChiTiet";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Bước 2: Bao gồm Bootstrap JavaScript -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // Kiểm tra TempData có chứa thông điệp không
+        var message = '@TempData["Message"]';
+        if (message) {
+            // Hiển thị cảnh báo nếu có
+            alert(message);
+        }
+    });
+
+
+    $(document).ready(function() {
+        // Lắng nghe sự kiện khi giá trị của input "font-size-range" thay đổi
+        $("#font-size-range").on("input", function() {
+            var fontSize = $(this).val() + "px";
+            $("#chapter-content").css("font-size", fontSize);
+        });
+
+        // Lắng nghe sự kiện khi giá trị của select "font-family-select" thay đổi
+        $("#font-family-select").on("change", function() {
+            var fontFamily = $(this).val();
+            $("#chapter-content").css("font-family", fontFamily);
+        });
+
+        // Lắng nghe sự kiện khi nút "Cập nhật nội dung" được click
+        $("#update-content-btn").on("click", function() {
+            // Gửi yêu cầu AJAX để lấy dữ liệu mới
+            $.ajax({
+                url: "/Truyen/GetNewContent", // Địa chỉ URL của action trong controller để lấy dữ liệu mới
+                method: "GET",
+                success: function(data) {
+                    // Cập nhật nội dung của phần tử "chapter-content" với dữ liệu mới
+                    $("#chapter-content").html(data);
+                },
+                error: function(xhr, status, error) {
+                    console.log("Lỗi khi lấy dữ liệu mới:", error);
+                }
+            });
+        });
+    });
+
+
+    
+</script>
+
+
+<style>
+    .dropdown-menu {
+        background-color: #ffffff; /* Màu nền của dropdown */
+        border: 1px solid #ced4da; /* Viền của dropdown */
+    }
+
+        .dropdown-menu a {
+            color: #212529; /* Màu chữ của các lựa chọn trong dropdown */
+            padding: 0.5rem 1rem; /* Khoảng cách giữa nội dung và viền của dropdown */
+            display: block; /* Hiển thị mỗi lựa chọn trên một dòng */
+            font-size: 16px; /* Kích thước chữ */
+            text-decoration: none; /* Loại bỏ gạch chân */
+        }
+
+            .dropdown-menu a:hover {
+                background-color: #f8f9fa; /* Màu nền khi di chuột qua lựa chọn */
+            }
+
+    .dropdown-toggle::after {
+        display: inline-block;
+        margin-left: 0.255em;
+        vertical-align: 0.255em;
+        content: "";
+        border-top: 0.3em solid;
+        border-right: 0.3em solid transparent;
+        border-bottom: 0;
+        border-left: 0.3em solid transparent;
+    }
+
+
+    .font-settings {
+        display: none;
+    }
+
+    .chapter-settings {
+        position: relative;
+        display: inline-block;
+    }
+
+    .font-settings {
+        display: none;
+        position: absolute;
+        background-color: #fff;
+        min-width: 160px;
+        box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+        z-index: 1;
+    }
+
+    .chapter-settings:hover .font-settings {
+        display: block;
+    }
+
+
+    .chapter-content p{
+        font-family: Arial, sans-serif; /* Font chữ */
+        font-size: 16px; /* Kích thước chữ */
+        line-height: 1.6; /* Độ cao dòng */
+        margin-bottom: 20px; /* Khoảng cách dưới */
+    }
+
+        /* Định dạng cho các thẻ p bên trong .chapter-content */
+        .chapter-content p {
+            margin-bottom: 10px; /* Khoảng cách giữa các đoạn văn */
+        }
+
+        /* Định dạng cho các tiêu đề h1, h2, h3, ... bên trong .chapter-content */
+        .chapter-content h1,
+        .chapter-content h2,
+        .chapter-content h3,
+        .chapter-content h4,
+        .chapter-content h5,
+        .chapter-content h6 {
+            font-weight: bold; /* In đậm */
+            margin-top: 20px; /* Khoảng cách trên */
+            margin-bottom: 10px; /* Khoảng cách dưới */
+        }
+
+</style>
+
+
+
+<main>
+    <div class="chapter-wrapper container my-5">
+        <a href="#" class="text-decoration-none">
+            <h1 class="text-center text-success">@Model.title</h1>
+        </a>
+        <a href="#" class="text-decoration-none">
+            <p class="text-center text-dark">Chương @Model.chap: @Model.title</p>
+        </a>
+        <hr class="chapter-start container-fluid">
+        <div class="chapter-nav text-center">
+            <div class="chapter-actions chapter-actions-origin d-flex align-items-center justify-content-center">
+                <a class="btn btn-success me-1 chapter-prev"
+                   href="/Truyen/PrevChapter/@Model.chapter_id" title="">
+                    <span>
+                        Chương
+                    </span>trước
+                </a>
+                @*<div class="dropdown">
+            <button class="btn btn-success dropdown-toggle" style="margin-right:4px" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Số chương
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+
+
+                @foreach (var item in Model)
+                {
+                    <a href="@Url.Action("DocTruyen", "Truyen", new { chapter_id = item.chapter_id })" class="dropdown-item">@item.chap</a>
+                }
+
+
+            </div>
+        </div>*@
+                <!-- Kết thúc Dropdown -->
+                <a class="btn btn-success chapter-next"
+                   href="/Truyen/NextChapter/@Model.chapter_id" title="">
+                    <span>
+                        Chương
+                    </span>tiếp
+                </a>
+
+                <!--<div class="chapter-settings">
+                    <a class="btn btn-success" href="#" title="">
+                        <span>Cài đặt</span>
+                    </a>
+                    <div class="font-settings">-->
+                        <!-- Nội dung của thanh công cụ cài đặt font size và font family -->
+                        <!--<label for="font-size-range">Kích thước chữ:</label>
+                        <input type="range" id="font-size-range" min="10" max="30" step="1" value="16">
+                        <select id="font-family-select">
+                            <option value="Arial">Arial</option>
+                            <option value="Helvetica">Helvetica</option>
+                            <option value="Times New Roman">Times New Roman</option>
+                            <option value="Courier New">Courier New</option>
+                            <option value="Verdana">Verdana</option>
+                        </select>
+                    </div>
+                </div>-->
+
+            </div>
+        </div>
+        <hr class="chapter-end container-fluid">
+
+
+        <div class="chapter-content mb-3">
+            <div class="visible-md visible-lg ads-responsive incontent-ad" id="ads-chapter-pc-top" align="center" style="height:100%">
+                <p style="font-family: Arial, sans-serif; font-size: 16px; margin-bottom: 10px; line-height: 2; margin-bottom: 20px; text-align: justify; ">@Model.content</p>
+            </div>
+        </div>
+
+</main>
+
+
+

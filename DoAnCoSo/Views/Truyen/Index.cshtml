@@ -1,0 +1,257 @@
+﻿@model PagedList.IPagedList<DoAnCoSo.Models.Story>
+@using PagedList.Mvc
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<!-- Bước 2: Bao gồm Bootstrap JavaScript -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // Kiểm tra TempData có chứa thông điệp không
+        var message = '@TempData["Message"]';
+        if (message) {
+            // Hiển thị cảnh báo nếu có
+            alert(message);
+        }
+    });
+</script>
+
+
+
+@*<div class="shop_category">
+        <h1>Danh mục</h1>
+            @Html.Action("GetCategory", "Shop")
+    </div>*@
+
+@*<div class="shop_product">
+    <div class="sort_product">
+        <p>Sắp xếp:</p>
+        <div class="price_sort">
+            <p>Theo giá tiền</p>
+            <div class="sort_droplist">
+                @Html.ActionLink("Giá tăng dần", "Index", new { sortOrder = ViewBag.PriceAsc, currentFilter = ViewBag.CurrentFilter })
+                @Html.ActionLink("Giá giảm dần", "Index", new { sortOrder = ViewBag.PriceDes, currentFilter = ViewBag.CurrentFilter })
+            </div>
+        </div>
+    </div>*@
+
+<style>
+    a {
+        text-decoration: none;
+    }
+    /* Reset CSS */
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Phần tử div chứa hàng */
+    .row {
+        display: flex;
+        flex-wrap: wrap;
+        margin-right: 0;
+    }
+
+    /* Phần tử div chứa cột */
+    .column {
+        flex: 1;
+        padding: 20px;
+    }
+
+    /* Cột cho thể loại */
+    .category-column {
+        background-color: #f2f2f2;
+        flex-basis: 15%;
+    }
+
+    /* Cột cho danh sách truyện */
+    .stories-column {
+        background-color: #eaeaea;
+        flex-basis: 85%;
+        overflow: hidden;
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .story {
+        display: flex;
+        width: 50%;
+        /*border: 1px solid #ccc;*/ /* Viền cho sản phẩm */
+        margin-bottom: 20px; /* Khoảng cách giữa các sản phẩm */
+        transition: transform 0.3s ease; /* Hiệu ứng chuyển động */
+        padding-top: 1.5rem !important;
+        padding-bottom: 1.5rem !important;
+    }
+
+        .story:hover {
+            transform: scale(1.05); /* Kích thước lớn hơn khi hover */
+        }
+
+        .story a {
+            display: block;
+            width: 100%; /* Đảm bảo phần click sẽ diễn ra trên toàn bộ sản phẩm */
+        }
+
+    .info_product {
+        margin-left: 10px;
+    }
+
+    .description_product p {
+        /*width: 435px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;*/
+
+        width: 400px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        line-height: 20px;
+        -webkit-line-clamp: 3;
+        height: 60px;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+    }
+
+    .soluongchap_product p {
+        font-style: italic; /* Kiểu chữ nghiêng cho số lượng chương */
+        margin-bottom: 5px; /* Khoảng cách dưới số lượng chương */
+    }
+
+    .tacgia_product p {
+        margin-bottom: 0; /* Không có khoảng cách dưới tác giả */
+    }
+
+    ul.theloai1 {
+        list-style: none;
+    }
+
+        ul.theloai1 a {
+            text-decoration: none;
+            font-size: .875rem;
+            color: #666 !important;
+            font-family: Source Sans Pro,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,sans-serif
+        }
+
+
+        ul.theloai1 li {
+            border: 1px solid #000000;
+            border-radius: 5px;
+            text-align: center;
+            margin-top: 5px;
+            font-size: 13px;
+            width: 70%;
+        }
+
+            ul.theloai1 li:hover {
+                color: white;
+                transform: scale(1.05);
+                transition: 0.3s ease;
+            }
+
+
+
+    .pagination-container {
+        text-align: center; /* Căn giữa nội dung */
+        margin-top: 20px; /* Khoảng cách phía trên */
+    }
+
+    ul.pagination {
+        display: inline-block; /* Hiển thị dạng inline để các phần tử con sắp xếp ngang nhau */
+        border: 1px solid #ccc; /* Viền của phân trang */
+        padding: 5px 10px; /* Khoảng cách nội dung với viền */
+        border-radius: 5px; /* Bo tròn góc */
+    }
+
+        ul.pagination .active {
+            color: black; /* Màu chữ cho trang hiện tại */
+        }
+
+    .pagination li a {
+        color: black;
+    }
+
+    .pagination li {
+        display: inline-block; /* Hiển thị các phần tử phân trang cạnh nhau */
+        margin: 0 5px; /* Khoảng cách giữa các phần tử */
+        cursor: pointer; /* Con trỏ chuột khi di chuột qua các phần tử */
+        font-size: 15px;
+    }
+
+        .pagination li:hover {
+            background-color: black; /* Màu nền khi di chuột qua các phần tử */
+            color: white;
+            transition: 0.3s ease;
+        }
+</style>
+
+
+@if (!string.IsNullOrEmpty(ViewBag.Message))
+{
+    <div class="alert alert-info">
+        @ViewBag.Message
+    </div>
+}
+
+
+
+<div class="row">
+    <div class="column category-column">
+        <ul class="theloai1">
+            <p style="">Thể loại</p>
+            @Html.Action("GetCategory", "Truyen")
+
+        </ul>
+    </div>
+    <div class="column stories-column">
+
+        @foreach (var item in Model)
+        {
+
+            <div class="story">
+                <a class="linkimg" href="/Truyen/ChiTiet/@item.story_id">
+                    <div class="image_product">
+                        <img style="align-self: center; height: 185px; margin-left:15px;" alt="@item.title"
+                             src="~/Content/images/@item.cover_image_url" />
+                    </div>
+                </a>
+                <div class="info_product">
+                    <div class="title_product" style="font-weight: 600; line-height: 1.2; font-family: Source Sans Pro,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,sans-serif">
+                        <p>@item.title</p>
+                    </div>
+
+                    <div class="theloai_product" style="font-size: .875rem; color: #666 !important; font-family: Source Sans Pro,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,sans-serif">
+                        <p> Thể loại: @item.Genre.genre_name</p>
+                    </div>
+
+                    <div class="description_product" style="font-size: .875rem; color: #666 !important; font-family: Source Sans Pro,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,sans-serif">
+                        <p>@item.description</p>
+                    </div>
+
+                    <div class="soluongchap_product" style="font-size: .875rem; color: #666 !important; font-family: Source Sans Pro,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,sans-serif">
+                        <p>Số chương: @item.Chapters.Count</p>
+                    </div>
+
+                    <div class="tacgia_product" style="font-size: .8125rem; max-width: 140px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;font-family: Source Sans Pro,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,sans-serif">
+
+                        <p><strong>Tác giả: </strong>@item.author</p>
+                    </div>
+
+                </div>
+            </div>
+
+
+        }
+
+
+    </div>
+</div>
+
+
+
+
+
+@Html.PagedListPager(Model, page => Url.Action("Index", new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))
