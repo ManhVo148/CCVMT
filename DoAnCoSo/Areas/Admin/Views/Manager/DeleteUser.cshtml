@@ -1,0 +1,20 @@
+﻿@model DoAnCoSo.Models.User
+
+@{
+    ViewBag.Title = "DeleteUser";
+    Layout = "~/Areas/Admin/Views/Shared/AdminLayout.cshtml";
+}
+
+
+@using (Html.BeginForm("DeleteUser", "Manager", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="info_back">
+        <div class="info_submit" style="text-align:center">
+            <input type="hidden" name="user_id" value="@Model.user_id" />
+            <input type="submit" value="Xóa" class="btn btn-default" /> |
+            @Html.ActionLink("Trở về", "ManagerProduct", "Manager")
+        </div>
+    </div>
+}

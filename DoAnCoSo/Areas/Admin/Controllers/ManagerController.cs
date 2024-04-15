@@ -222,6 +222,172 @@ namespace DoAnCoSo.Areas.Admin.Controllers
 
 
 
+////////////////////////////////////////////////////////////USER
+public ActionResult ManagerUser(string sortUser, string currentFilter, string searchString, int? page)
+{
+    ViewBag.CurrentSort = sortUser;
+    ViewBag.AdminUserDes = "user_Des";
+    ViewBag.AdminUserAsc = "user_Asc";
+
+
+    string admin = (string)Session["Role"];
+    if (Session["idUser"] != null && admin.CompareTo("Admin") == 0)
+    {
+        if (searchString != null)
+        {
+            page = 1;
+        }
+        else
+        {
+            searchString = currentFilter;
+        }
+
+        ViewBag.CurrentFilter = searchString;
+
+        var user = from s in dbContext.Users
+                   select s;
+        if (!String.IsNullOrEmpty(searchString))
+        {
+            user = user.Where(s => s.username.Contains(searchString));
+        }
+
+
+        switch (sortUser)
+        {
+            case "user_Des":
+                user = user.OrderByDescending(s => s.username);
+                break;
+            case "user_Asc":
+                user = user.OrderBy(s => s.username);
+                break;
+            default:  // Name ascending                    
+                break;
+        }
+
+
+        int pageSize = 6;
+        int pageIndex = page.HasValue ? page.Value : 1;
+
+
+
+        //  var listProduct = dbContext.Product.Where(p =>p.title == name)
+        //var listProduct = dbContext.Product.ToList();
+        return View(user.ToList().ToPagedList(pageIndex, pageSize));
+    }
+    else
+    {
+        return RedirectToAction("DangNhap", "Account", new { area = "" });
+    }
+}
+
+[HttpGet]
+public ActionResult CreateUser()
+{
+    string admin = (string)Session["Role"];
+    if (Session["idUser"] != null && admin.CompareTo("Admin") == 0)
+    {
+        ViewBag.ListRoleUser = dbContext.Roles.ToList();
+        return View();
+    }
+    else
+    {
+        return RedirectToAction("Login", "Account", new { area = "" });
+    }
+
+
+
+}
+
+[HttpPost]
+public ActionResult CreateUser(User newUser)
+{
+    newUser.password = GetMD5(newUser.password);
+
+    if (ModelState.IsValid)
+    {
+        var check = dbContext.Users.FirstOrDefault(s => s.email == newUser.email);
+        if (check == null)
+        {
+            dbContext.Users.Add(newUser);
+            dbContext.SaveChanges(); ;
+            return RedirectToAction("ManagerUser");
+        }
+        else
+        {
+            ViewBag.error = "Email đã tồn tại";
+            ViewBag.ListRoleUser = dbContext.Roles.ToList();
+            return View();
+        }
+    }
+    else
+        return RedirectToAction("CreateUser");
+}
+
+public ActionResult EditUser(int id)
+{
+    var _user = dbContext.Users.FirstOrDefault(p => p.user_id == id);
+    ViewBag.ListRoleUser = dbContext.Roles.ToList();
+    return View(_user);
+}
+[HttpPost]
+public ActionResult EditUser(User editUser)
+{
+
+    var _user = dbContext.Users.FirstOrDefault(p => p.user_id == editUser.user_id);
+    if (_user != null)
+    {
+        var f_password = GetMD5(editUser.password);
+        _user.username = editUser.username;
+        _user.role_id = editUser.role_id;
+        _user.password = f_password;
+        _user.email = editUser.email;
+        dbContext.SaveChanges();
+        return RedirectToAction("ManagerUser", "Manager");
+    }
+    else
+    {
+        return HttpNotFound("khong tim thay hoac loi");
+    }
+}
+
+public ActionResult DeleteUser(int id)
+{
+    var _User = dbContext.Users.FirstOrDefault(p => p.user_id == id);
+    return View(_User);
+}
+
+[HttpPost]
+public ActionResult DeleteUser(User delUser)
+{
+
+
+    var _User = dbContext.Users.FirstOrDefault(p => p.user_id == delUser.user_id);
+    if (_User != null)
+    {
+        var _UserFind = dbContext.Bookmarks.FirstOrDefault(p => p.user_id == _User.user_id);
+        var _UserFind1 = dbContext.Ratings.FirstOrDefault(p => p.user_id == _User.user_id);
+        if (_UserFind != null || _UserFind1 != null)
+        {
+            TempData["Message"] = "Ban khong the xoa nguoi dung nay";
+            return View();
+
+        }
+        else
+        {
+            dbContext.Users.Remove(_User);
+            dbContext.SaveChanges();
+            return RedirectToAction("ManagerUser", "Manager");
+        }
+    }
+    else
+    {
+        ViewBag.ErroDellUser1 = "Khong co nguoi dung hoac nguoi dung da bi xoa";
+        return View();
+    }
+
+}
+
+
 
 
 
