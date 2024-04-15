@@ -1,0 +1,98 @@
+@*@model IEnumerable<DoAnCoSo.Models.User>*@
+
+
+@model PagedList.IPagedList<DoAnCoSo.Models.User>
+@using PagedList.Mvc
+
+@{
+    ViewBag.Title = "ManagerUser";
+    Layout = "~/Areas/Admin/Views/Shared/AdminLayout.cshtml";
+}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Bước 2: Bao gồm Bootstrap JavaScript -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+<script>
+ $(document).ready(function() {
+     // Kiểm tra TempData có chứa thông điệp không
+     var message = '@TempData["Message"]';
+     if (message) {
+         // Hiển thị cảnh báo nếu có
+         alert(message);
+     }
+ });</script>
+@using (Html.BeginForm("ManagerUser", "Manager", FormMethod.Get))
+{
+    @*@Html.TextBox("searchString", null, new { placeholder = "Tìm kiếm người dùng" })
+        <input type="submit" value="Search" placeholder="Search" class="search" />*@
+
+    @*<div class="input-group">
+            <div class="input-group-prepend bg-transparent">
+                <i class="input-group-text border-0 mdi mdi-magnify"></i>
+            </div>
+            <input type="text" class="form-control bg-transparent border-0" placeholder="Tìm kiếm sản phẩm">
+        </div>*@
+    <div class="header_managerproduct">
+        <div class="create_product">
+            @Html.ActionLink("Thêm", "CreateUser")
+        </div>
+        <div class="admin_sort_product">
+            <p>Sắp xếp:</p>
+            <div class="admin_price_sort">
+                <p>Theo tên</p>
+                <div class="admin_sort_droplist">
+                    @Html.ActionLink("Xếp a-z", "ManagerUser", new { sortUser = ViewBag.AdminUserAsc, currentFilter = ViewBag.CurrentFilter })
+                    @Html.ActionLink("Xếp z-a", "ManagerUser", new { sortUser = ViewBag.AdminUserDes, currentFilter = ViewBag.CurrentFilter })
+                </div>
+            </div>
+        </div>
+        <div class="search_po">
+            @Html.TextBox("searchString", null, new { placeholder = "Tìm kiếm theo tên " })
+            <input type="submit" value="Tìm kiếm" placeholder="Search" class="search" />
+        </div>
+    </div>
+}
+
+<table class="table">
+    <tr>
+        <th>
+            Chức vụ
+        </th>
+        <th>
+            Tên
+        </th>
+        <th>
+            Email
+        </th>
+
+
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Role.role_name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.username)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.email)
+            </td>
+
+            <td>
+
+                <div class="edit_product">
+                    <a href="/Admin/Manager/EditUser/@item.user_id">Sửa</a>
+                </div>
+                <div class="del_product">
+                    <a href="/Admin/Manager/DeleteUser/@item.user_id">Xoá</a>
+                </div>
+            </td>
+        </tr>
+    }
+
+</table>
+@Html.PagedListPager(Model, page => Url.Action("ManagerUser", new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))
